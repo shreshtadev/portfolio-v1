@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" role="img" aria-labelledby="brandLogoTitle">
+  <title id="brandLogoTitle">Chinmai D Bharadwaj brand mark</title>
+  <defs>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#22d3ee" />
+    </linearGradient>
+    <filter id="brandGlow" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="10" y="10" width="100" height="100" rx="28" fill="#0f172a" stroke="url(#brandGradient)" stroke-width="8" filter="url(#brandGlow)" />
+  <path d="M42 35 C28 35 28 75 42 75" fill="none" stroke="url(#brandGradient)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <path d="M42 35 H58 C72 35 72 75 58 75 H42" fill="none" stroke="url(#brandGradient)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" />
+  <circle cx="40" cy="32" r="3.5" fill="#22d3ee" />
+  <circle cx="56" cy="80" r="3.5" fill="#10b981" />
+  <circle cx="82" cy="40" r="3.5" fill="#22d3ee" />
+</svg>
