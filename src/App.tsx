@@ -21,6 +21,7 @@ import heroImage from "./assets/hero.png";
 import brandLogo from "./assets/logo.svg";
 import badgeLogo from "./assets/logo-2.svg";
 import ContactForm from "./components/ContactForm";
+import Hero from "./components/Hero";
 
 const staggerContainer: Variants = {
   hidden: {},
@@ -307,29 +308,7 @@ const App = () => {
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <motion.h1
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 1,
-                    ease: [0.22, 1, 0.36, 1],
-                  }}
-                  className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4"
-                >
-                  Chinmai D Bharadwaj
-                </motion.h1>
-
-                <motion.h2
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{
-                    delay: 0.2,
-                    duration: 0.8,
-                  }}
-                  className="text-xl md:text-2xl text-slate-400 font-light flex items-center gap-3"
-                >
-                  Senior Full-Stack Developer & Entrepreneur
-                </motion.h2>
+                <Hero />
               </motion.div>
 
               <motion.div

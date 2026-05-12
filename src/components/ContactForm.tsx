@@ -133,9 +133,7 @@ const ContactForm = () => {
             <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 text-xs text-amber-400 leading-relaxed">
               <p className="font-semibold mb-1">⚙️ Setup required</p>
               <p>
-                Add <code className="bg-amber-500/10 px-1 rounded">VITE_TELEGRAM_BOT_TOKEN</code> and{" "}
-                <code className="bg-amber-500/10 px-1 rounded">VITE_TELEGRAM_CHAT_ID</code> to your{" "}
-                <code className="bg-amber-500/10 px-1 rounded">.env</code> file.
+                Missing <span className="bg-amber-500/10 px-1 rounded">configurations</span>
               </p>
             </div>
           )}
