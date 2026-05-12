@@ -20,6 +20,8 @@ import {
 import heroImage from "./assets/hero.png";
 import brandLogo from "./assets/logo.svg";
 import badgeLogo from "./assets/logo-2.svg";
+import ContactForm from "./components/ContactForm";
+
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("experience");
@@ -67,6 +69,8 @@ const App = () => {
       "Git",
       "IntelliJ IDEA",
       "Tomcat/Undertow/Netty",
+      "Telegram",
+      "AWS services",
     ],
   };
 
@@ -431,7 +435,10 @@ const App = () => {
         </div>
       </main>
 
+      <ContactForm />
+
       {/* Footer */}
+
       <footer className="border-t border-slate-800/60 bg-slate-950 py-8 mt-12">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
           <p>
