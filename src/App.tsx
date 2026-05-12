@@ -1,5 +1,5 @@
 import { useState } from "react";
-
+import { motion, AnimatePresence, type Variants } from "motion/react";
 import {
   Mail,
   Phone,
@@ -22,6 +22,29 @@ import brandLogo from "./assets/logo.svg";
 import badgeLogo from "./assets/logo-2.svg";
 import ContactForm from "./components/ContactForm";
 
+const staggerContainer: Variants = {
+  hidden: {},
+  show: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const fadeUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.8,
+      ease: [0.22, 1, 0.36, 1],
+    },
+  },
+};
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("experience");
@@ -178,290 +201,633 @@ const App = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-emerald-500/30">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-emerald-500/30 relative overflow-hidden"
+    >
+      {/* Ambient Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          animate={{
+            x: [0, 30, 0],
+            y: [0, -20, 0],
+          }}
+          transition={{
+            duration: 14,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-20 left-[-10%] w-[500px] h-[500px] bg-emerald-500/10 blur-[140px] rounded-full"
+        />
+
+        <motion.div
+          animate={{
+            x: [0, -30, 0],
+            y: [0, 20, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute bottom-0 right-[-10%] w-[400px] h-[400px] bg-cyan-500/10 blur-[140px] rounded-full"
+        />
+      </div>
+
       {/* Header / Hero Section */}
       <header className="relative overflow-hidden border-b border-slate-800/60 bg-slate-900/50 pt-20 pb-16">
-        <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-emerald-500 via-teal-400 to-cyan-500"></div>
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: 1.2 }}
+          className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-emerald-500 via-teal-400 to-cyan-500 origin-left"
+        />
+
         <div className="max-w-5xl mx-auto px-6 relative z-10">
           <div className="grid gap-10 xl:grid-cols-[1.45fr_0.95fr] xl:items-end">
-            <div className="space-y-8">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            {/* Left Content */}
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="show"
+              className="space-y-8"
+            >
+              <motion.div
+                variants={fadeUp}
+                className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6"
+              >
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-14 h-14 rounded-3xl border border-emerald-500/20 bg-slate-950 shadow-xl">
+                  <motion.div
+                    whileHover={{
+                      scale: 1.08,
+                      rotate: 3,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 260,
+                      damping: 18,
+                    }}
+                    className="flex items-center justify-center w-14 h-14 rounded-3xl border border-emerald-500/20 bg-slate-950 shadow-xl"
+                  >
                     <img
                       src={brandLogo}
                       alt="Brand mark"
                       className="w-10 h-10"
                     />
-                  </div>
+                  </motion.div>
+
                   <div>
                     <p className="text-xs uppercase tracking-[0.32em] text-emerald-400 font-semibold">
                       Senior Full-Stack Developer
                     </p>
+
                     <p className="text-sm text-slate-400">
                       Cloud-native systems, microservices, AI workflows
                     </p>
                   </div>
                 </div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium">
-                  <Rocket className="w-4 h-4" /> Available for new opportunities
-                </div>
-              </div>
 
-              <div>
-                <h1 className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4">
+                <motion.div
+                  whileHover={{
+                    scale: 1.04,
+                    y: -2,
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
+                  className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-sm font-medium"
+                >
+                  <Rocket className="w-4 h-4" />
+                  Available for new opportunities
+                </motion.div>
+              </motion.div>
+
+              <motion.div variants={fadeUp}>
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4"
+                >
                   Chinmai D Bharadwaj
-                </h1>
-                <h2 className="text-xl md:text-2xl text-slate-400 font-light flex items-center gap-3">
-                  Senior Full-Stack Developer & Entrepreneur
-                </h2>
-              </div>
+                </motion.h1>
 
-              <div className="mt-8 flex flex-wrap gap-4 text-sm text-slate-400">
-                <a
+                <motion.h2
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    delay: 0.2,
+                    duration: 0.8,
+                  }}
+                  className="text-xl md:text-2xl text-slate-400 font-light flex items-center gap-3"
+                >
+                  Senior Full-Stack Developer & Entrepreneur
+                </motion.h2>
+              </motion.div>
+
+              <motion.div
+                variants={fadeUp}
+                className="mt-8 flex flex-wrap gap-4 text-sm text-slate-400"
+              >
+                <motion.a
+                  whileHover={{
+                    y: -2,
+                    scale: 1.03,
+                  }}
+                  whileTap={{ scale: 0.98 }}
                   href="mailto:chinmai.bharadwaj@ymail.com"
                   className="flex items-center gap-2 hover:text-emerald-400 transition-colors"
                 >
-                  <Mail className="w-4 h-4" /> chinmai.bharadwaj@ymail.com
-                </a>
-                <span className="flex items-center gap-2">
-                  <Phone className="w-4 h-4" /> +91 7975700560
-                </span>
-                <span className="flex items-center gap-2">
-                  <MapPin className="w-4 h-4" /> Shimoga, Karnataka, India
-                </span>
-              </div>
+                  <Mail className="w-4 h-4" />
+                  chinmai.bharadwaj@ymail.com
+                </motion.a>
 
-              <div className="mt-6 flex flex-wrap gap-3">
-                <a
+                <span className="flex items-center gap-2">
+                  <Phone className="w-4 h-4" />
+                  +91 7975700560
+                </span>
+
+                <span className="flex items-center gap-2">
+                  <MapPin className="w-4 h-4" />
+                  Shimoga, Karnataka, India
+                </span>
+              </motion.div>
+
+              <motion.div
+                variants={fadeUp}
+                className="mt-6 flex flex-wrap gap-3"
+              >
+                <motion.a
+                  whileHover={{
+                    scale: 1.05,
+                    y: -3,
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
                   href="https://github.com/whiteblizzard9248"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all border border-slate-700 hover:border-slate-600"
                 >
-                  <GitFork className="w-4 h-4" /> @whiteblizzard9248
-                </a>
-                <a
+                  <GitFork className="w-4 h-4" />
+                  @whiteblizzard9248
+                </motion.a>
+
+                <motion.a
+                  whileHover={{
+                    scale: 1.05,
+                    y: -3,
+                  }}
+                  whileTap={{ scale: 0.97 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 260,
+                    damping: 20,
+                  }}
                   href="https://github.com/shreshtadev"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-lg transition-all border border-slate-700 hover:border-slate-600"
                 >
-                  <GitFork className="w-4 h-4" /> @shreshtadev
-                </a>
-              </div>
-            </div>
+                  <GitFork className="w-4 h-4" />
+                  @shreshtadev
+                </motion.a>
+              </motion.div>
+            </motion.div>
 
-            <div className="relative">
+            {/* Hero Image */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, x: 40 }}
+              animate={{
+                opacity: 1,
+                scale: 1,
+                x: 0,
+              }}
+              transition={{
+                duration: 1,
+                delay: 0.2,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="relative"
+            >
               <div className="overflow-hidden rounded-4xl border border-slate-800 bg-slate-950 shadow-2xl">
-                <img
+                <motion.img
                   src={heroImage}
                   alt="Illustration of modern engineering workflow"
-                  className="w-full h-full object-cover animate-float"
+                  className="w-full h-full object-cover"
+                  animate={{
+                    y: [0, -12, 0],
+                    scale: [1, 1.015, 1],
+                  }}
+                  transition={{
+                    duration: 8,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
                 />
               </div>
-              <div className="absolute -top-3 right-3 flex items-center justify-center w-20 h-20 rounded-3xl border border-emerald-500/20 bg-slate-900/90 shadow-xl animate-pulse-slow">
+
+              <motion.div
+                animate={{
+                  y: [0, -8, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute -top-3 right-3 flex items-center justify-center w-20 h-20 rounded-3xl border border-emerald-500/20 bg-slate-900/90 shadow-xl"
+              >
                 <img
                   src={badgeLogo}
                   alt=""
                   aria-hidden="true"
                   className="w-12 h-12"
                 />
-              </div>
-              <div className="absolute bottom-6 left-6 right-6 rounded-3xl border border-slate-800 bg-slate-950/95 p-4 shadow-xl backdrop-blur">
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: 0.6,
+                  duration: 0.8,
+                }}
+                className="absolute bottom-6 left-6 right-6 rounded-3xl border border-slate-800 bg-slate-950/95 p-4 shadow-xl backdrop-blur"
+              >
                 <p className="text-xs uppercase tracking-[0.24em] text-emerald-400 font-semibold">
                   Featured expertise
                 </p>
+
                 <p className="mt-2 text-sm text-slate-300 leading-relaxed">
                   Microservices, AI integrations, and enterprise-grade cloud
                   architecture built for scale.
                 </p>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </header>
 
       {/* Main Content */}
       <main className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
-        {/* Left Column: Skills & Education */}
-        <div className="lg:col-span-1 space-y-12">
-          {/* Skills Section */}
-          <section>
+        {/* Left Column */}
+        <motion.div
+          variants={staggerContainer}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true }}
+          className="lg:col-span-1 space-y-12"
+        >
+          {/* Skills */}
+          <motion.section variants={fadeUp}>
             <h3 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
-              <Code2 className="w-6 h-6 text-emerald-500" /> Technical Arsenal
+              <Code2 className="w-6 h-6 text-emerald-500" />
+              Technical Arsenal
             </h3>
+
             <div className="space-y-6">
               {Object.entries(skills).map(([category, items]) => (
                 <div key={category}>
                   <h4 className="text-sm font-medium text-slate-500 uppercase tracking-wider mb-3">
                     {category}
                   </h4>
+
                   <div className="flex flex-wrap gap-2">
-                    {items.map((skill) => (
-                      <span
+                    {items.map((skill, index) => (
+                      <motion.span
                         key={skill}
+                        initial={{
+                          opacity: 0,
+                          scale: 0.8,
+                        }}
+                        whileInView={{
+                          opacity: 1,
+                          scale: 1,
+                        }}
+                        viewport={{ once: true }}
+                        transition={{
+                          delay: index * 0.03,
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 18,
+                        }}
+                        whileHover={{
+                          scale: 1.08,
+                          y: -3,
+                        }}
                         className="px-3 py-1.5 bg-slate-800/80 border border-slate-700/50 rounded-md text-sm text-slate-300 hover:text-emerald-400 hover:border-emerald-500/30 transition-colors cursor-default"
                       >
                         {skill}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
                 </div>
               ))}
             </div>
-          </section>
+          </motion.section>
 
-          {/* Education Section */}
-          <section>
+          {/* Education */}
+          <motion.section variants={fadeUp}>
             <h3 className="text-2xl font-bold text-white flex items-center gap-2 mb-6">
-              <GraduationCap className="w-6 h-6 text-emerald-500" /> Education
+              <GraduationCap className="w-6 h-6 text-emerald-500" />
+              Education
             </h3>
-            <div className="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+
+            <motion.div
+              whileHover={{
+                y: -4,
+                scale: 1.01,
+              }}
+              transition={{
+                type: "spring",
+                stiffness: 260,
+                damping: 20,
+              }}
+              className="bg-slate-900 border border-slate-800 p-5 rounded-xl"
+            >
               <h4 className="text-white font-medium">
                 B.E. in Mechanical Engineering
               </h4>
+
               <p className="text-sm text-slate-400 mt-1">
                 Government Engineering College, Hassan
               </p>
+
               <p className="text-xs text-slate-500 mt-2">
                 Affiliated to VTU Belgaum
               </p>
-            </div>
-          </section>
-        </div>
+            </motion.div>
+          </motion.section>
+        </motion.div>
 
-        {/* Right Column: Experience & Projects */}
+        {/* Right Column */}
         <div className="lg:col-span-2 space-y-12">
           {/* Tabs */}
           <div className="flex gap-4 border-b border-slate-800 pb-px">
-            <button
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setActiveTab("experience")}
-              className={`pb-4 text-lg font-medium transition-colors relative ${activeTab === "experience" ? "text-emerald-400" : "text-slate-500 hover:text-slate-300"}`}
+              className={`pb-4 text-lg font-medium transition-colors relative ${
+                activeTab === "experience"
+                  ? "text-emerald-400"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
             >
               <span className="flex items-center gap-2">
-                <Briefcase className="w-5 h-5" /> Experience
+                <Briefcase className="w-5 h-5" />
+                Experience
               </span>
+
               {activeTab === "experience" && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-500 rounded-t-full"></span>
+                <motion.span
+                  layoutId="tabIndicator"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-500 rounded-t-full"
+                />
               )}
-            </button>
-            <button
+            </motion.button>
+
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => setActiveTab("projects")}
-              className={`pb-4 text-lg font-medium transition-colors relative ${activeTab === "projects" ? "text-emerald-400" : "text-slate-500 hover:text-slate-300"}`}
+              className={`pb-4 text-lg font-medium transition-colors relative ${
+                activeTab === "projects"
+                  ? "text-emerald-400"
+                  : "text-slate-500 hover:text-slate-300"
+              }`}
             >
               <span className="flex items-center gap-2">
-                <Globe className="w-5 h-5" /> Key Highlights
+                <Globe className="w-5 h-5" />
+                Key Highlights
               </span>
+
               {activeTab === "projects" && (
-                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-500 rounded-t-full"></span>
+                <motion.span
+                  layoutId="tabIndicator"
+                  className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-500 rounded-t-full"
+                />
               )}
-            </button>
+            </motion.button>
           </div>
 
-          {/* Experience Content */}
-          {activeTab === "experience" && (
-            <div className="space-y-8 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-emerald-500/50 before:to-transparent">
-              {experience.map((job, index) => (
-                <div
-                  key={index}
-                  className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active"
-                >
-                  <div className="flex items-center justify-center w-5 h-5 rounded-full border-[3px] border-slate-950 bg-emerald-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_0_4px_rgba(16,185,129,0.1)] z-10 ml-0.75 md:ml-0"></div>
+          {/* Animated Tab Content */}
+          <AnimatePresence mode="wait">
+            {activeTab === "experience" && (
+              <motion.div
+                key="experience"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.35 }}
+                className="space-y-8 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-emerald-500/50 before:to-transparent"
+              >
+                {experience.map((job, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{
+                      opacity: 0,
+                      y: 60,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    viewport={{
+                      once: true,
+                      amount: 0.2,
+                    }}
+                    transition={{
+                      duration: 0.7,
+                      delay: index * 0.12,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                    className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.3 }}
+                      className="flex items-center justify-center w-5 h-5 rounded-full border-[3px] border-slate-950 bg-emerald-500 shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-[0_0_0_4px_rgba(16,185,129,0.1)] z-10 ml-0.75 md:ml-0"
+                    />
 
-                  <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-emerald-500/30 transition-colors shadow-sm hover:shadow-emerald-500/5">
-                    <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
-                      <h4 className="text-xl font-bold text-white">
-                        {job.role}
-                      </h4>
-                      <span className="text-emerald-400 text-sm font-medium font-mono bg-emerald-500/10 px-2 py-1 rounded">
-                        {job.period}
-                      </span>
-                    </div>
-                    <h5 className="text-lg text-slate-400 mb-4">
-                      {job.company}
-                    </h5>
-                    <p className="text-sm text-slate-300 mb-4 leading-relaxed">
-                      {job.description}
-                    </p>
-                    <ul className="space-y-2 mb-5">
-                      {job.highlights.map((highlight, idx) => (
-                        <li
-                          key={idx}
-                          className="text-sm text-slate-400 flex items-start gap-2"
-                        >
-                          <ChevronRight className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                          <span>{highlight}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-800/60">
-                      {job.tech.map((tech, idx) => (
-                        <span
-                          key={idx}
-                          className="text-xs font-medium px-2 py-1 bg-slate-950 border border-slate-800 text-slate-400 rounded"
-                        >
-                          {tech}
+                    <motion.div
+                      whileHover={{
+                        y: -6,
+                        scale: 1.01,
+                      }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 20,
+                      }}
+                      className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-emerald-500/30 transition-colors shadow-sm hover:shadow-emerald-500/5"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center justify-between mb-2">
+                        <h4 className="text-xl font-bold text-white">
+                          {job.role}
+                        </h4>
+
+                        <span className="text-emerald-400 text-sm font-medium font-mono bg-emerald-500/10 px-2 py-1 rounded">
+                          {job.period}
                         </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+                      </div>
 
-          {/* Projects Content */}
-          {activeTab === "projects" && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {projects.map((project, index) => (
-                <div
-                  key={index}
-                  className="bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-emerald-500/30 hover:bg-slate-800/50 transition-all group"
-                >
-                  <div className="w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    {project.icon}
-                  </div>
-                  <h4 className="text-xl font-bold text-white mb-3">
-                    {project.title}
-                  </h4>
-                  <p className="text-sm text-slate-400 leading-relaxed mb-6">
-                    {project.description}
-                  </p>
-                </div>
-              ))}
-            </div>
-          )}
+                      <h5 className="text-lg text-slate-400 mb-4">
+                        {job.company}
+                      </h5>
+
+                      <p className="text-sm text-slate-300 mb-4 leading-relaxed">
+                        {job.description}
+                      </p>
+
+                      <ul className="space-y-2 mb-5">
+                        {job.highlights.map((highlight, idx) => (
+                          <motion.li
+                            key={idx}
+                            initial={{
+                              opacity: 0,
+                              x: -10,
+                            }}
+                            whileInView={{
+                              opacity: 1,
+                              x: 0,
+                            }}
+                            transition={{
+                              delay: idx * 0.05,
+                            }}
+                            className="text-sm text-slate-400 flex items-start gap-2"
+                          >
+                            <ChevronRight className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                            <span>{highlight}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+
+                      <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-800/60">
+                        {job.tech.map((tech, idx) => (
+                          <motion.span
+                            key={idx}
+                            whileHover={{
+                              scale: 1.08,
+                              y: -2,
+                            }}
+                            className="text-xs font-medium px-2 py-1 bg-slate-950 border border-slate-800 text-slate-400 rounded"
+                          >
+                            {tech}
+                          </motion.span>
+                        ))}
+                      </div>
+                    </motion.div>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+
+            {activeTab === "projects" && (
+              <motion.div
+                key="projects"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.35 }}
+                className="grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
+                {projects.map((project, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{
+                      opacity: 0,
+                      y: 30,
+                    }}
+                    whileInView={{
+                      opacity: 1,
+                      y: 0,
+                    }}
+                    viewport={{ once: true }}
+                    whileHover={{
+                      y: -8,
+                      rotateX: 2,
+                      rotateY: -2,
+                    }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 220,
+                      damping: 18,
+                    }}
+                    className="bg-slate-900 border border-slate-800 p-6 rounded-2xl hover:border-emerald-500/30 hover:bg-slate-800/50 transition-all group"
+                  >
+                    <motion.div
+                      whileHover={{
+                        scale: 1.12,
+                        rotate: 4,
+                      }}
+                      className="w-12 h-12 bg-slate-950 border border-slate-800 rounded-xl flex items-center justify-center mb-6"
+                    >
+                      {project.icon}
+                    </motion.div>
+
+                    <h4 className="text-xl font-bold text-white mb-3">
+                      {project.title}
+                    </h4>
+
+                    <p className="text-sm text-slate-400 leading-relaxed">
+                      {project.description}
+                    </p>
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </main>
 
       <ContactForm />
 
       {/* Footer */}
-
       <footer className="border-t border-slate-800/60 bg-slate-950 py-8 mt-12">
         <div className="max-w-5xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-500">
           <p>
             © {new Date().getFullYear()} Chinmai D Bharadwaj. All rights
             reserved.
           </p>
+
           <div className="flex items-center gap-6">
-            <a
+            <motion.a
+              whileHover={{
+                y: -2,
+                scale: 1.04,
+              }}
               href="https://github.com/whiteblizzard9248"
               className="hover:text-emerald-400 transition-colors"
             >
               WhiteBlizzard
-            </a>
-            <a
+            </motion.a>
+
+            <motion.a
+              whileHover={{
+                y: -2,
+                scale: 1.04,
+              }}
               href="https://github.com/shreshtadev"
               className="hover:text-emerald-400 transition-colors"
             >
               ShreshtaDEV
-            </a>
+            </motion.a>
           </div>
         </div>
       </footer>
-    </div>
+    </motion.div>
   );
 };
 
