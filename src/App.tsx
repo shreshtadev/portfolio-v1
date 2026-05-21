@@ -1,5 +1,9 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence, type Variants } from "motion/react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import Lenis from "lenis";
+import * as THREE from "three";
 import {
   Mail,
   Phone,
@@ -21,7 +25,8 @@ import heroImage from "./assets/hero.png";
 import brandLogo from "./assets/logo.svg";
 import badgeLogo from "./assets/logo-2.svg";
 import ContactForm from "./components/ContactForm";
-import Hero from "./components/Hero";
+
+gsap.registerPlugin(ScrollTrigger);
 
 const staggerContainer: Variants = {
   hidden: {},
@@ -49,6 +54,8 @@ const fadeUp: Variants = {
 
 const App = () => {
   const [activeTab, setActiveTab] = useState("experience");
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const rootRef = useRef<HTMLDivElement | null>(null);
 
   const skills = {
     backend: [
@@ -201,13 +208,162 @@ const App = () => {
     },
   ];
 
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+
+    const palette = [
+      { bg: "#0f172a", accent: "#14b8a6" },
+      { bg: "#111827", accent: "#f97316" },
+      { bg: "#172554", accent: "#22c55e" },
+      { bg: "#0b1324", accent: "#38bdf8" },
+    ];
+
+    const lenis = new Lenis({ duration: 1.2, smoothWheel: true, touchMultiplier: 1.1 });
+    let rafId = 0;
+    const raf = (time: number) => {
+      lenis.raf(time);
+      rafId = requestAnimationFrame(raf);
+    };
+    rafId = requestAnimationFrame(raf);
+
+    lenis.on("scroll", ScrollTrigger.update);
+    const tick = (time: number) => lenis.raf(time * 1000);
+    gsap.ticker.add(tick);
+    gsap.ticker.lagSmoothing(0);
+
+    const sections = gsap.utils.toArray<HTMLElement>(".chapter-section");
+    sections.forEach((section, index) => {
+      const scene = section.querySelector(".scene-card") ?? section;
+      gsap.fromTo(
+        scene,
+        { autoAlpha: 0, y: 70, scale: 0.97 },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 1.1,
+          ease: "power3.out",
+          scrollTrigger: {
+            trigger: section,
+            start: "top 78%",
+            end: "top 22%",
+            toggleActions: "play none none reverse",
+          },
+        }
+      );
+
+      ScrollTrigger.create({
+        trigger: section,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          const tone = palette[index % palette.length];
+          gsap.to(root, { "--bg-start": tone.bg, "--bg-accent": tone.accent, duration: 1.0, ease: "power2.out" });
+        },
+        onEnterBack: () => {
+          const tone = palette[index % palette.length];
+          gsap.to(root, { "--bg-start": tone.bg, "--bg-accent": tone.accent, duration: 1.0, ease: "power2.out" });
+        },
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+      gsap.ticker.remove(tick);
+      lenis.destroy();
+    };
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.z = 1.7;
+
+    const geometry = new THREE.PlaneGeometry(4.2, 4.2, 120, 120);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0x48c7bc,
+      roughness: 0.8,
+      metalness: 0.05,
+      transparent: true,
+      opacity: 0.5,
+    });
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 1.0);
+    const point = new THREE.PointLight(0xffffff, 1.5, 8);
+    point.position.set(0.8, 0.5, 1.4);
+    scene.add(ambient, point);
+
+    const pointer = new THREE.Vector2(0, 0);
+    const onPointerMove = (event: PointerEvent) => {
+      pointer.x = (event.clientX / window.innerWidth) * 2 - 1;
+      pointer.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    };
+    const onResize = () => {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      renderer.setSize(w, h);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    };
+
+    onResize();
+    window.addEventListener("pointermove", onPointerMove);
+    window.addEventListener("resize", onResize);
+
+    const positions = geometry.attributes.position.array as Float32Array;
+    let threeRaf = 0;
+    const animate = () => {
+      const t = performance.now() * 0.00035;
+      for (let i = 0; i < positions.length; i += 3) {
+        const x = positions[i];
+        const y = positions[i + 1];
+        positions[i + 2] = Math.sin(x * 2.6 + t) * 0.05 + Math.cos(y * 3.1 + t * 1.5) * 0.05;
+      }
+      geometry.attributes.position.needsUpdate = true;
+      geometry.computeVertexNormals();
+      plane.rotation.x += (pointer.y * 0.35 - plane.rotation.x) * 0.06;
+      plane.rotation.y += (pointer.x * 0.35 - plane.rotation.y) * 0.06;
+      point.position.x = pointer.x * 1.2;
+      point.position.y = pointer.y;
+      renderer.render(scene, camera);
+      threeRaf = requestAnimationFrame(animate);
+    };
+    threeRaf = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(threeRaf);
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("resize", onResize);
+      geometry.dispose();
+      material.dispose();
+      renderer.dispose();
+    };
+  }, []);
+
   return (
     <motion.div
+      ref={rootRef}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen bg-slate-950 text-slate-300 font-sans selection:bg-emerald-500/30 relative overflow-hidden"
+      style={
+        {
+          "--bg-start": "#0f172a",
+          "--bg-accent": "#14b8a6",
+        } as React.CSSProperties
+      }
+      className="min-h-screen text-slate-300 font-sans selection:bg-emerald-500/30 relative overflow-hidden [background:radial-gradient(circle_at_15%_20%,var(--bg-accent),transparent_40%),linear-gradient(180deg,var(--bg-start),#020617_75%)]"
     >
+      <canvas ref={canvasRef} className="pointer-events-none fixed inset-0 -z-10 opacity-70" />
       {/* Ambient Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -238,7 +394,7 @@ const App = () => {
       </div>
 
       {/* Header / Hero Section */}
-      <header className="relative overflow-hidden border-b border-slate-800/60 bg-slate-900/50 pt-20 pb-16">
+      <header className="chapter-section relative overflow-hidden border-b border-slate-800/60 bg-slate-900/50 pt-20 pb-16 min-h-screen flex items-center">
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
@@ -246,7 +402,7 @@ const App = () => {
           className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-emerald-500 via-teal-400 to-cyan-500 origin-left"
         />
 
-        <div className="max-w-5xl mx-auto px-6 relative z-10">
+        <div className="scene-card max-w-5xl mx-auto px-6 relative z-10">
           <div className="grid gap-10 xl:grid-cols-[1.45fr_0.95fr] xl:items-end">
             {/* Left Content */}
             <motion.div
@@ -308,7 +464,29 @@ const App = () => {
               </motion.div>
 
               <motion.div variants={fadeUp}>
-                <Hero />
+                <motion.h1
+                  initial={{ opacity: 0, y: 30 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 1,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                  className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4"
+                >
+                  Chinmai D Bharadwaj
+                </motion.h1>
+
+                <motion.h2
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    delay: 0.2,
+                    duration: 0.8,
+                  }}
+                  className="text-xl md:text-2xl text-slate-400 font-light flex items-center gap-3"
+                >
+                  Senior Full-Stack Developer & Entrepreneur
+                </motion.h2>
               </motion.div>
 
               <motion.div
@@ -460,7 +638,7 @@ const App = () => {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12">
+      <main className="max-w-5xl mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-3 gap-12 chapter-section">
         {/* Left Column */}
         <motion.div
           variants={staggerContainer}
@@ -771,7 +949,11 @@ const App = () => {
         </div>
       </main>
 
-      <ContactForm />
+      <section className="chapter-section">
+        <div className="scene-card">
+          <ContactForm />
+        </div>
+      </section>
 
       {/* Footer */}
       <footer className="border-t border-slate-800/60 bg-slate-950 py-8 mt-12">
