@@ -1,95 +1,104 @@
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 
-const ScrambledText = ({
-  text,
-  className = "",
-}: {
-  text: string;
-  className?: string;
-}) => {
-  const [displayText, setDisplayText] = useState("");
-
-  useEffect(() => {
-    const chars =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let frame = 0;
-
-    const interval = setInterval(() => {
-      const scrambled = text
-        .split("")
-        .map((char, index) => {
-          if (char === " ") return " ";
-
-          if (index < frame) {
-            return text[index];
-          }
-
-          return chars[Math.floor(Math.random() * chars.length)];
-        })
-        .join("");
-
-      setDisplayText(scrambled);
-
-      frame += 0.5;
-
-      if (frame >= text.length) {
-        setDisplayText(text);
-        clearInterval(interval);
-      }
-    }, 40);
-
-    return () => clearInterval(interval);
-  }, [text]);
-
-  return <span className={className}>{displayText}</span>;
+type HeroProps = {
+  name: string;
+  title: string;
+  summary: string;
+  highlights?: string[];
 };
 
-export default function Hero() {
-  const text = "Chinmai D Bharadwaj";
+const defaultHighlights = [
+  "Cloud-native systems",
+  "Microservices",
+  "AI workflows",
+];
 
-  const [displayedText, setDisplayedText] = useState("");
+export default function Hero({
+  name,
+  title,
+  summary,
+  highlights = defaultHighlights,
+}: HeroProps) {
+  const [displayedName, setDisplayedName] = useState("");
 
   useEffect(() => {
     let index = 0;
 
-    const interval = setInterval(() => {
-      setDisplayedText(text.slice(0, index + 1));
-      index++;
+    const interval = window.setInterval(() => {
+      index += 1;
+      setDisplayedName(name.slice(0, index));
 
-      if (index === text.length) {
-        clearInterval(interval);
+      if (index >= name.length) {
+        window.clearInterval(interval);
       }
-    }, 100); // typing speed
+    }, 85);
 
-    return () => clearInterval(interval);
-  }, []);
+    return () => window.clearInterval(interval);
+  }, [name]);
 
   return (
-    <>
-    <motion.h1
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: 1,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className="text-4xl md:text-6xl font-bold text-white tracking-tight mb-4"
-    >
-      {displayedText}
-      <span className="animate-pulse">|</span>
-    </motion.h1>
-    <motion.h2
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{
-                        delay: 0.2,
-                        duration: 0.8,
-                      }}
-                      className="text-xl md:text-2xl text-slate-400 font-light flex items-center gap-3"
-                    >
-                      <ScrambledText text="Senior Full-Stack Developer & Entrepreneur" />
-                    </motion.h2>
-    </>
+    <section className="space-y-3.5">
+      <motion.div
+        initial={{ opacity: 0, width: 0 }}
+        animate={{ opacity: 1, width: "100%" }}
+        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        className="flex items-center gap-3 overflow-hidden text-[0.66rem] uppercase tracking-[0.34em] text-amber-300"
+      >
+        <span className="h-px w-7 shrink-0 bg-linear-to-r from-amber-400/0 via-amber-300/85 to-amber-400/0" />
+        <span className="whitespace-nowrap">Professional profile</span>
+        <span className="h-px flex-1 bg-white/10" />
+      </motion.div>
+
+      <div className="space-y-2">
+        <motion.h1
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-4xl text-4xl font-semibold tracking-tight text-white md:text-5xl lg:text-[3.6rem]"
+        >
+          {displayedName}
+          <span className="ml-1 inline-block animate-pulse text-amber-300/80">
+            |
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.12, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-2xl text-base font-light leading-relaxed text-(--theme-text-soft) md:text-lg"
+        >
+          {title}
+        </motion.p>
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+          className="max-w-2xl text-sm leading-6 text-(--theme-text-muted) md:text-sm"
+        >
+          {summary}
+        </motion.p>
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.28, duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
+        className="flex flex-wrap gap-2.5"
+      >
+        {highlights.map((item) => (
+          <motion.span
+            key={item}
+            whileHover={{ y: -2, scale: 1.02 }}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="theme-surface-soft inline-flex items-center rounded-full px-3 py-1 text-[0.7rem] font-medium tracking-wide text-(--theme-text-soft) shadow-[0_12px_28px_rgba(15,23,42,0.2)]"
+          >
+            {item}
+          </motion.span>
+        ))}
+      </motion.div>
+    </section>
   );
 }

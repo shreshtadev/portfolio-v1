@@ -1,5 +1,12 @@
 import { useState, useRef } from "react";
-import { Send, CheckCircle2, AlertCircle, Loader2, Bot, ChevronDown } from "lucide-react";
+import {
+  Send,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Bot,
+  ChevronDown,
+} from "lucide-react";
 
 interface FormData {
   name: string;
@@ -14,9 +21,7 @@ const CONTACT_API_URL = import.meta.env.VITE_CONTACT_API_URL as string;
 
 const sendTelegramMessage = async (data: FormData): Promise<void> => {
   if (!CONTACT_API_URL) {
-    throw new Error(
-      "Cannot make the request."
-    );
+    throw new Error("Cannot make the request.");
   }
 
   const res = await fetch(CONTACT_API_URL, {
@@ -31,7 +36,7 @@ const sendTelegramMessage = async (data: FormData): Promise<void> => {
     const err = await res.json().catch(() => ({}));
 
     throw new Error(
-      (err as { error?: string }).error ?? "Failed to send message."
+      (err as { error?: string }).error ?? "Failed to send message.",
     );
   }
 };
@@ -50,7 +55,9 @@ const ContactForm = () => {
   const isConfigured = Boolean(CONTACT_API_URL);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -70,28 +77,30 @@ const ContactForm = () => {
   };
 
   const inputCls =
-    "w-full bg-slate-900 border border-slate-700/60 rounded-xl px-4 py-3 text-slate-200 placeholder-slate-500 text-sm focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all";
+    "theme-surface-soft w-full rounded-xl px-4 py-3 text-sm text-[var(--theme-text-soft)] placeholder:text-[var(--theme-text-muted)] focus:outline-none focus:border-[rgba(244,184,96,0.35)] focus:ring-1 focus:ring-[rgba(244,184,96,0.18)] transition-all";
 
   return (
-    <section id="contact" className="max-w-5xl mx-auto px-6 pb-20">
+    <section id="contact" className="max-w-4xl mx-auto px-0 pb-16">
       {/* Section header */}
-      <div className="flex items-center gap-3 mb-10">
-        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">
-          <Send className="w-5 h-5 text-emerald-400" />
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold text-white">Get In Touch</h2>
-          <p className="text-slate-500 text-sm mt-0.5">
-            Send me a message — I'll get back to you shortly.
-          </p>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8">
+        <div className="flex items-center gap-3">
+          <div className="theme-surface-soft flex h-10 w-10 items-center justify-center rounded-xl">
+            <Send className="w-5 h-5 text-amber-300" />
+          </div>
+          <div>
+            <h2 className="text-2xl font-bold text-white">Get In Touch</h2>
+            <p className="text-sm mt-0.5 text-(--theme-text-muted)">
+              Send me a message — I'll get back to you shortly.
+            </p>
+          </div>
         </div>
 
         {/* Telegram badge */}
         <div
-          className={`ml-auto flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border ${
+          className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium border self-start sm:self-auto ${
             isConfigured
-              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
-              : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+              ? "theme-accent-soft"
+              : "bg-red-500/10 border-red-500/20 text-red-300"
           }`}
         >
           <Bot className="w-3.5 h-3.5" />
@@ -99,21 +108,23 @@ const ContactForm = () => {
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-8">
+      <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         {/* Info card */}
-        <div className="lg:col-span-2 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5">
+        <div className="space-y-4">
+          <div className="theme-surface-strong rounded-2xl p-5 space-y-5">
             <div>
-              <p className="text-xs uppercase tracking-widest text-emerald-400 font-semibold mb-1">
+              <p className="text-xs uppercase tracking-[0.26em] text-amber-300 font-semibold mb-1">
                 Response time
               </p>
-              <p className="text-slate-300 text-sm">Usually within 24 hours</p>
+              <p className="text-sm text-(--theme-text-soft)">
+                Usually within 24 hours
+              </p>
             </div>
             <div>
-              <p className="text-xs uppercase tracking-widest text-emerald-400 font-semibold mb-1">
+              <p className="text-xs uppercase tracking-[0.26em] text-amber-300 font-semibold mb-1">
                 Open to
               </p>
-              <ul className="space-y-1.5 text-sm text-slate-400">
+              <ul className="space-y-1.5 text-sm text-(--theme-text-muted)">
                 {[
                   "Freelance projects",
                   "Full-time opportunities",
@@ -121,7 +132,7 @@ const ContactForm = () => {
                   "Open source collaboration",
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -130,25 +141,31 @@ const ContactForm = () => {
           </div>
 
           {!isConfigured && (
-            <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-4 text-xs text-amber-400 leading-relaxed">
-              <p className="font-semibold mb-1">⚙️ Setup required</p>
+            <div className="theme-surface-soft rounded-xl p-4 text-xs text-amber-300 leading-relaxed">
+              <p className="font-semibold mb-1">Setup required</p>
               <p>
-                Missing <span className="bg-amber-500/10 px-1 rounded">configurations</span>
+                Missing{" "}
+                <span className="rounded bg-amber-500/10 px-1 text-amber-200">
+                  configurations
+                </span>
               </p>
             </div>
           )}
         </div>
 
         {/* Form */}
-        <div className="lg:col-span-3">
+        <div>
           <form
             ref={formRef}
             onSubmit={handleSubmit}
-            className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-5"
+            className="theme-surface-strong rounded-2xl p-5 space-y-4"
           >
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
-                <label htmlFor="contact-name" className="text-xs uppercase tracking-wider text-slate-500 font-medium">
+                <label
+                  htmlFor="contact-name"
+                  className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+                >
                   Name
                 </label>
                 <input
@@ -163,7 +180,10 @@ const ContactForm = () => {
                 />
               </div>
               <div className="space-y-1.5">
-                <label htmlFor="contact-email" className="text-xs uppercase tracking-wider text-slate-500 font-medium">
+                <label
+                  htmlFor="contact-email"
+                  className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+                >
                   Email
                 </label>
                 <input
@@ -179,36 +199,41 @@ const ContactForm = () => {
               </div>
             </div>
 
-<div className="relative">
-  <select
-    id="contact-subject"
-    name="subject"
-    required
-    value={form.subject}
-    onChange={handleChange}
-    className={`${inputCls} appearance-none pr-10`}
-  >
-    <option value="">Select a subject</option>
-    <option value="project-collaboration">Project Collaboration</option>
-    <option value="freelance-work">Freelance Work</option>
-    <option value="job-opportunity">Job Opportunity</option>
-    <option value="other">Other</option>
-  </select>
+            <div className="relative">
+              <select
+                id="contact-subject"
+                name="subject"
+                required
+                value={form.subject}
+                onChange={handleChange}
+                className={`${inputCls} appearance-none pr-10`}
+              >
+                <option value="">Select a subject</option>
+                <option value="project-collaboration">
+                  Project Collaboration
+                </option>
+                <option value="freelance-work">Freelance Work</option>
+                <option value="job-opportunity">Job Opportunity</option>
+                <option value="other">Other</option>
+              </select>
 
-  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-400">
-    <ChevronDown size={16} />
-  </div>
-</div>
+              <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-(--theme-text-muted)">
+                <ChevronDown size={16} />
+              </div>
+            </div>
 
             <div className="space-y-1.5">
-              <label htmlFor="contact-message" className="text-xs uppercase tracking-wider text-slate-500 font-medium">
+              <label
+                htmlFor="contact-message"
+                className="text-xs uppercase tracking-[0.24em] text-(--theme-text-muted) font-medium"
+              >
                 Message
               </label>
               <textarea
                 id="contact-message"
                 name="message"
                 required
-                rows={5}
+                rows={4}
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Tell me about your project or opportunity…"
@@ -218,7 +243,7 @@ const ContactForm = () => {
 
             {/* Status feedback */}
             {status === "success" && (
-              <div className="flex items-center gap-2 text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-3 text-sm">
+              <div className="theme-accent-soft flex items-center gap-2 rounded-xl px-4 py-3 text-sm">
                 <CheckCircle2 className="w-4 h-4 shrink-0" />
                 Message sent successfully! I'll reply soon.
               </div>
@@ -233,7 +258,7 @@ const ContactForm = () => {
             <button
               type="submit"
               disabled={status === "sending" || !isConfigured}
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-400 disabled:opacity-50 disabled:cursor-not-allowed text-slate-950 font-semibold rounded-xl transition-all text-sm shadow-lg shadow-emerald-500/20 hover:shadow-emerald-500/30 active:scale-[0.98] cursor-pointer"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition-all hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-50 shadow-[0_18px_40px_rgba(244,184,96,0.22)] hover:shadow-[0_20px_45px_rgba(244,184,96,0.28)] active:scale-[0.98] cursor-pointer"
             >
               {status === "sending" ? (
                 <>

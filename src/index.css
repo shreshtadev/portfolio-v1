@@ -1,5 +1,80 @@
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    color-scheme: dark;
+    --theme-bg-start: #07111f;
+    --theme-bg-accent: #123a67;
+    --theme-surface: rgba(11, 18, 32, 0.78);
+    --theme-surface-strong: rgba(7, 13, 24, 0.94);
+    --theme-surface-soft: rgba(18, 26, 44, 0.62);
+    --theme-border: rgba(148, 163, 184, 0.16);
+    --theme-border-strong: rgba(148, 163, 184, 0.24);
+    --theme-text: #f8fafc;
+    --theme-text-soft: #d6deea;
+    --theme-text-muted: #8b97a8;
+    --theme-accent: #f4b860;
+    --theme-accent-strong: #f59e0b;
+    --theme-accent-soft: rgba(244, 184, 96, 0.16);
+    --theme-accent-contrast: #111827;
+    --theme-selection: rgba(244, 184, 96, 0.28);
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    background: #040812;
+    color: var(--theme-text-soft);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background: var(--theme-selection);
+    color: var(--theme-text);
+  }
+}
+
+@layer components {
+  .theme-shell {
+    background:
+      radial-gradient(circle at 16% 18%, var(--theme-bg-accent), transparent 36%),
+      linear-gradient(180deg, var(--theme-bg-start), #040812 78%);
+  }
+
+  .theme-surface {
+    background: var(--theme-surface);
+    border: 1px solid var(--theme-border);
+    backdrop-filter: blur(18px);
+  }
+
+  .theme-surface-strong {
+    background: var(--theme-surface-strong);
+    border: 1px solid var(--theme-border-strong);
+    backdrop-filter: blur(20px);
+  }
+
+  .theme-surface-soft {
+    background: var(--theme-surface-soft);
+    border: 1px solid var(--theme-border);
+    backdrop-filter: blur(12px);
+  }
+
+  .theme-accent-text {
+    color: var(--theme-accent);
+  }
+
+  .theme-accent-soft {
+    background: var(--theme-accent-soft);
+    border-color: rgba(244, 184, 96, 0.28);
+    color: var(--theme-accent);
+  }
+}
+
 @layer utilities {
   @keyframes float {
     0%,
